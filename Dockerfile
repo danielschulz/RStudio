@@ -2,7 +2,7 @@ FROM centos:centos7
 MAINTAINER Daniel Schulz
 
 RUN mkdir -p /apps/sw/tmp && \
-    yum install -y wget nettools netcat ping htop \
+    yum install -y wget nettools netstat netcat ping htop socat sudo \
     curl time sed gcc dkms make cmake bzip2 perl git zip unzip nano bcrypt \
     python-setuptools python-jpype iputils-ping netcat
 
@@ -10,9 +10,11 @@ WORKDIR /apps/sw/tmp
 
 ARG RSTUDIO_SERVER_URL="https://download2.rstudio.org/rstudio-server-rhel-1.1.463-x86_64.rpm"
 ARG EPEL_RELEASE_URL="https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm"
+ARG REDIR_RPM_URL="http://li.nux.ro/download/nux/misc/el7/x86_64//redir-2.2.1-7.el7.nux.x86_64.rpm"
 
 RUN cd /apps/sw/tmp && \
     rpm -Uvh ${EPEL_RELEASE_URL} && \
+    rpm -Uvh ${REDIR_RPM_URL} && \
     yum clean all && \
     yum install -y R && \
     yum install -y --nogpgcheck ${RSTUDIO_SERVER_URL} && \
@@ -41,6 +43,8 @@ RUN mkdir -p /apps/data /apps/tmp && \
 
 USER ${ACC_USER_UID}:${ACC_GROUP_GID}
 
-EXPOSE 80
+EXPOSE 8787
 
-ENTRYPOINT rstudio-server start && tail -f /dev/null
+ENTRYPOINT rstudio-server start && tail -f /var/lib/rstudio-server/monitor/log/rstudio-server.log
+
+docker run -d --name dev -p "flask:20708:8787" danielschulz/rstudio:dev && sleep 2 && docker exec -it dev bash
