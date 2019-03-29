@@ -1,0 +1,24 @@
+
+# Binaries
+*.whl            binary
+*.tar.gz         binary
+*.tar            binary
+*.gz             binary
+*.7z             binary
+*.zip            binary
+*.gz             binary
+*.gzip           binary
+*.bz             binary
+*.bz2            binary
+*.bzip           binary
+*.bzip2          binary
+
+
+# Texts
+*.ipynb          text
+*.py             text
+*.txt            text
+*.gitattributes  text
+*.gitignore      text
+*.md             text
+LICENSE          text
